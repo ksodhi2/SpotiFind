@@ -57,9 +57,38 @@ app.get("/api/getArtistInfo", function(req, res){
     // Send call to the database 
     db.query(sqlReq, (err,result) => {
         // Send the SQL result in the API response
+        console.log(result);
         res.send(result);
     })
 } )
+
+
+app.put("/api/deleteUser", function(req, res){
+    const userId = req.query.id;
+    const sqlDelete = `DELETE FROM USERS WHERE user_id = "${userId}";`;
+    db.query(sqlDelete, (err, result) => {
+        res.sned(result);
+    })
+})
+
+app.get("/api/insertUser", function(req, res){
+    const userId = parseInt(req.query.userId);
+    const userCountry = req.query.userCountry;
+    console.log(req.query);
+    const sqlInsert = `INSERT INTO Users (user_id, country, explicit) values (${userId}, "${userCountry}", 0);`;
+    db.query(sqlInsert, (err, result) => {
+        res.send(result);
+    })
+})
+
+app.get("/api/findUser", function(req, res){
+    const userId = parseInt(req.query.userId);
+    //console.log(req.query);
+    const sqlInsert = `SELECT * FROM Users WHERE user_id = ${userId};`;
+    db.query(sqlInsert, (err, result) => {
+        res.send(result);
+    })
+})
 
 
 app.listen(8080, () => {

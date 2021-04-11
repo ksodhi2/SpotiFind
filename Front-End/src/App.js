@@ -1,7 +1,9 @@
 import './App.css';
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import Axios from 'axios';
-//import { Button } from '@material-ui/core';
+import Login from "./Login.js";
+import {getTokenFromUrl} from "./Spotify";
+
 
 
 function App() {
@@ -14,7 +16,25 @@ function App() {
   const [text2, setText2] = useState("No query.")
   const [text3, setText3] = useState("No query.")
   const [text4, setText4] = useState("No query.")
+  const [token, setToken] = useState();
 
+
+  const [userId1, setUserId1] = useState("");
+  const [userCountry1, setUserCountry1] = useState("");
+  const [userId4, setUserId4] = useState("");
+
+
+  useEffect(() => {
+    const hash = getTokenFromUrl();
+    window.location.hash = "";
+    const _token = hash.access_token;
+
+    if (_token) {
+      setToken(_token);
+    }
+
+    console.log("token", token);
+  }, []);
 
   const exampleQuery1 = () => {
     
@@ -28,12 +48,52 @@ function App() {
       console.log(error);
     }).then( (res) => { 
       //Adding the query response to a single string
-      var str = "";
-      res.data.forEach((entry) => {
-        str += `${JSON.stringify(entry, null, '\t')}\n`;
-      })
+      if(res != null) {
+      var str = JSON.stringify(res.data, null, '\t');
+      }
       //Update the text1 state variable with the response data
       setText1(str);
+    })
+  }
+
+  const insertUser = () => {
+    console.log(userId1);
+       console.log(userCountry1);
+     Axios.get("http://localhost:8080/api/insertUser", {
+      //Passing in the artist as the input parameter
+        params: {userId: userId1,
+        userCountry: userCountry1
+        }
+    }).catch(function (error) {   //Catch any error from the response
+      console.log(error);
+    }).then( (res) => { 
+      //Adding the query response to a single string
+      if(res != null) {
+      var str = JSON.stringify(res.data, null, '\t');
+      }
+      //Update the text1 state variable with the response data
+      setText1("Insert Successful");
+    })
+  }
+
+  const findUser = () => {
+   
+     Axios.get("http://localhost:8080/api/findUser", {
+      //Passing in the artist as the input parameter
+        params: {
+          userId: userId4
+        
+        }
+    }).catch(function (error) {   //Catch any error from the response
+      console.log(error);
+    }).then( (res) => { 
+      //Adding the query response to a single string
+      var str;
+      if(res != null) {
+        str = JSON.stringify(res.data, null, '\t');
+      }
+      //Update the text1 state variable with the response data
+      setText2(str);
     })
   }
 
@@ -73,14 +133,32 @@ function App() {
 
   return (
     <div className="App">
+      <script src="https://sdk.scdn.co/spotify-player.js"></script>
+
       <header className="App-header">
         
         <h1>SpotiFind!</h1>
-        <h2>Query 1</h2>
-        <input onChange={handleInput1}></input>
-        <button onClick={exampleQuery1}>Find tracks!</button>
-        <p>{input1}</p>
+
+        <h2>User Controls</h2>
+        {/* User id for insert */}
+        <p>User Id</p>
+
+        <input onChange={(event) => setUserId1(event.target.value)}></input>
+        <p>User country</p>
+        <input onChange={(event) => setUserCountry1(event.target.value)}></input>
+        <button onClick={insertUser}>Insert User</button>
         <p>{text1}</p>
+        {/* User id for update */}
+        <input onChange={handleInput1}></input>
+        <input onChange={handleInput1}></input>
+        <button onClick={exampleQuery1}>Update User</button>
+        {/* User id for delete */}
+        <input onChange={handleInput1}></input>
+        <button onClick={exampleQuery1}>Delete User</button>
+        {/* User id for search */}
+        <input onChange={(event) => setUserId4(event.target.value)}></input>
+        <button onClick={findUser}>Search User</button>
+        <p>{text2}</p>
         
         <h2>Query 2</h2>
         <input onChange={handleInput2}></input>
