@@ -12,10 +12,18 @@ function App() {
   const [input2, setInput2] = useState("");
   const [input3, setInput3] = useState("");
   const [input4, setInput4] = useState("");
+  const [input5, setInput5] = useState("");
+  const [input6, setInput6] = useState("");
+  const [input7, setInput7] = useState("");
+  const [input8, setInput8] = useState("");
+  const [input9, setInput9] = useState("");
+  const [input10, setInput10] = useState("");
   const [text1, setText1] = useState("No query.")
   const [text2, setText2] = useState("No query.")
   const [text3, setText3] = useState("No query.")
   const [text4, setText4] = useState("No query.")
+  const [text5, setText5] = useState("No query.")
+  const [text6, setText6] = useState("No query.")
   const [token, setToken] = useState();
 
 
@@ -37,79 +45,105 @@ function App() {
   }, []);
 
   const exampleQuery1 = () => {
-    
     //Make a GET call to the backend server
-    Axios.get("http://localhost:8080/api/getArtistInfo", {
-      //Passing in the artist as the input parameter
+    Axios.get("http://localhost:8080/api/findGenre", {
+      //Passing in the track as the input parameter
       params:{
-        artist: input1
+        genre: input1
       }
     }).catch(function (error) {   //Catch any error from the response
       console.log(error);
     }).then( (res) => { 
       //Adding the query response to a single string
-      if(res != null) {
-      var str = JSON.stringify(res.data, null, '\t');
-      }
+      var str = "";
+      //if(typeof(data) === "string"){data = JSON.parse(data)}
+      res.data.forEach((entry) => {
+        str += `${JSON.stringify(entry, null, '\t')}\n`;
+      })
       //Update the text1 state variable with the response data
       setText1(str);
     })
   }
 
-  const insertUser = () => {
-    console.log(userId1);
-       console.log(userCountry1);
-     Axios.get("http://localhost:8080/api/insertUser", {
-      //Passing in the artist as the input parameter
-        params: {userId: userId1,
-        userCountry: userCountry1
-        }
-    }).catch(function (error) {   //Catch any error from the response
-      console.log(error);
-    }).then( (res) => { 
-      //Adding the query response to a single string
-      if(res != null) {
-      var str = JSON.stringify(res.data, null, '\t');
-      }
-      //Update the text1 state variable with the response data
-      setText1("Insert Successful");
-    })
-  }
-
-  const findUser = () => {
-   
-     Axios.get("http://localhost:8080/api/findUser", {
-      //Passing in the artist as the input parameter
-        params: {
-          userId: userId4
-        
-        }
-    }).catch(function (error) {   //Catch any error from the response
-      console.log(error);
-    }).then( (res) => { 
-      //Adding the query response to a single string
-      var str;
-      if(res != null) {
-        str = JSON.stringify(res.data, null, '\t');
-      }
-      //Update the text1 state variable with the response data
-      setText2(str);
-    })
-  }
 
   //Put the second query here
   const exampleQuery2 = () => {
-    
+    Axios.get("http://localhost:8080/api/insertTopGenres", {
+      //Passing in the country as the input parameter
+      params:{
+        userId: input2,
+        genreId: input3,
+        genreRank: input4
+      }
+    }).catch(function (error) {   //Catch any error from the response
+      console.log(error);
+    }).then( (res) => { 
+      //Adding the query response to a single string
+      if(res != null) {
+        var str = JSON.stringify(res.data, null, '\t');
+      }
+      //Update the text1 state variable with the response data
+      setText2("Insertion Complete");
+    })
   }
 
-  //Put the third query here
   const exampleQuery3 = () => {
-    
+    Axios.get("http://localhost:8080/api/deleteTopGenres", {
+      //Passing in the country as the input parameter
+      params:{
+        userId: input5,
+        genreId: input6,
+      }
+    }).catch(function (error) {   //Catch any error from the response
+      console.log(error);
+    }).then( (res) => { 
+      //Adding the query response to a single string
+      if(res != null) {
+        var str = JSON.stringify(res.data, null, '\t');
+      }
+      //Update the text1 state variable with the response data
+      setText3("Deletion Complete");
+    })
   }
 
-  //Put the fourth query here
   const exampleQuery4 = () => {
-    
+    //Make a GET call to the backend server
+    Axios.get("http://localhost:8080/api/getLowkeyGenres", {
+      //Passing in the country as the input parameter
+      params:{
+        userId: input7
+      }
+    }).catch(function (error) {   //Catch any error from the response
+      console.log(error);
+    }).then( (res) => { 
+      //Adding the query response to a single string
+      var str = "";
+      res.data.forEach((entry) => {
+        str += `${JSON.stringify(entry, null, '\t')}\n`;
+      })
+      //Update the text1 state variable with the response data
+      setText4(str);
+    })
+  }
+
+  const exampleQuery5 = () => {
+    Axios.get("http://localhost:8080/api/updateGenres", {
+      //Passing in the country as the input parameter
+      params:{
+        userId: input8,
+        genreId: input9,
+        genreRank: input10
+      }
+    }).catch(function (error) {   //Catch any error from the response
+      console.log(error);
+    }).then( (res) => { 
+      //Adding the query response to a single string
+      if(res != null) {
+        var str = JSON.stringify(res.data, null, '\t');
+      }
+      //Update the text1 state variable with the response data
+      setText5("Update Complete");
+    })
   }
 
 
@@ -129,6 +163,30 @@ function App() {
   function handleInput4(event) {
     setInput4(event.target.value);
   }
+
+  function handleInput5(event) {
+    setInput5(event.target.value);
+  }
+
+  function handleInput6(event) {
+    setInput6(event.target.value);
+  }
+
+  function handleInput7(event) {
+    setInput7(event.target.value);
+  }
+
+  function handleInput8(event) {
+    setInput8(event.target.value);
+  }
+
+  function handleInput9(event) {
+    setInput9(event.target.value);
+  }
+  
+  function handleInput10(event) {
+    setInput10(event.target.value);
+  }
   
 
   return (
@@ -138,45 +196,36 @@ function App() {
       <header className="App-header">
         
         <h1>SpotiFind!</h1>
-
-        <h2>User Controls</h2>
-        {/* User id for insert */}
-        <p>User Id</p>
-
-        <input onChange={(event) => setUserId1(event.target.value)}></input>
-        <p>User country</p>
-        <input onChange={(event) => setUserCountry1(event.target.value)}></input>
-        <button onClick={insertUser}>Insert User</button>
+        <h2>Search Genre</h2>
+        <input placeholder= "Genre Name" onChange={handleInput1}></input>
+        <button onClick={exampleQuery1}>Find Genres!</button>
         <p>{text1}</p>
-        {/* User id for update */}
-        <input onChange={handleInput1}></input>
-        <input onChange={handleInput1}></input>
-        <button onClick={exampleQuery1}>Update User</button>
-        {/* User id for delete */}
-        <input onChange={handleInput1}></input>
-        <button onClick={exampleQuery1}>Delete User</button>
-        {/* User id for search */}
-        <input onChange={(event) => setUserId4(event.target.value)}></input>
-        <button onClick={findUser}>Search User</button>
+        
+        
+        <h2>Insert a genre into your top genres</h2>
+        <input placeholder = "User ID" onChange={handleInput2}></input>
+        <input placeholder = "Genre ID" onChange={handleInput3}></input>
+        <input placeholder = "Genre Rank" onChange={handleInput4}></input>
+        <button onClick={() => exampleQuery2()}>Insert Genre!</button>
         <p>{text2}</p>
         
-        <h2>Query 2</h2>
-        <input onChange={handleInput2}></input>
-        <button onClick={exampleQuery2}>Find tracks!</button>
-        <p>{input2}</p>
-        <p>{text2}</p>
-        
-        <h2>Query 3</h2>
-        <input onChange={handleInput3}></input>
-        <button onClick={() => exampleQuery3()}>Find tracks!</button>
-        <p>{input3}</p>
+        <h2>Delete a genre from your top genres</h2>
+        <input placeholder = "User ID" onChange={handleInput5}></input>
+        <input placeholder = "Genre ID" onChange={handleInput6}></input>
+        <button onClick={() => exampleQuery3()}>Delete Genre!</button>
         <p>{text3}</p>
 
-        <h2>Query 4</h2>
-        <input onChange={handleInput4}></input>
-        <button onClick={() => exampleQuery4()}>Find tracks!</button>
-        <p>{input4}</p>
+        <h2>Find some lowkey genres you like!</h2>
+        <input placeholder = "User ID" onChange={handleInput7}></input>
+        <button onClick={exampleQuery4}>Click Here!</button>
         <p>{text4}</p>
+
+        <h2>Update your top genres</h2>
+        <input placeholder = "User ID" onChange={handleInput8}></input>
+        <input placeholder = "Genre ID" onChange={handleInput9}></input>
+        <input placeholder = "Desired Rank" onChange={handleInput10}></input>
+        <button onClick={() => exampleQuery5()}>Update Top Genres</button>
+        <p>{text5}</p>
       </header>
     </div>
   );
