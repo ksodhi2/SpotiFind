@@ -70,7 +70,7 @@ function App() {
       _user = res.data;
     })
 
-    if(_user != null) {
+    if(_user != {}) {
       Axios.get("http://localhost:8080/api/updateLogin", {
         params: {
           user: user,
