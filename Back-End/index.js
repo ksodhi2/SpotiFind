@@ -90,6 +90,71 @@ app.get("/api/findUser", function(req, res){
     })
 })
 
+app.get("/api/getLogin", function(req, res) {
+    const uri = JSON.parse(req.query.user).uri;
+    
+    var findUser = `SELECT * FROM Logins WHERE spotify_id="${uri}";`;
+    
+    db.query(findUser, (err,result) => {
+        res.send(result[0]);
+    })
+})
+
+app.get("/api/updateLogin", function(req, res) {
+    var _user = JSON.parse(req.query.user);
+    var cache = JSON.parse(req.query.cache);
+    var updateUser = `UPDATE Logins
+                    SET last_login = NOW(), country = "${_user.country}", 
+                        cache_token  = "${cache}"
+                    WHERE spotify_id = "${_user.uri}";`
+
+    db.query(updateUser, (err,result) => {
+        res.send("Update Successful");
+    })
+})
+
+app.get("/api/getNewUserId", function(req, res){
+    var findMax = "SELECT max(user_id) as max_id FROM Users;"
+    db.query(findMax, (err,result) => {
+        
+        res.send(result[0]);
+    })
+})
+
+app.get("/api/addNewUser", function(req, res) {
+    var user = JSON.parse(req.query.user);
+    var cache = req.query.cache;
+    var id = req.query.id;
+    //console.log(req.query);
+
+    //Set explicit
+    var explicit = user.explicit_content.filter_enabled == true ? 0 : 1;
+    var newUser = `INSERT INTO Users (user_id, explicit, country)
+                        VALUES (${id}, ${explicit}, "${user.country}");`
+
+    console.log(newUser);
+    db.query(newUser, (err,result) => {
+        console.log(err);
+        res.send("Added to users");
+    })
+})
+
+app.get("/api/addNewLogin", function(req, res) {
+    var user = JSON.parse(req.query.user);
+    var cache = req.query.cache;
+    var id = req.query.id;
+    
+    var explicit = user.explicit_content.filter_enabled == true ? 0 : 1;
+    var newLogin = `INSERT INTO Logins (spotify_id, user_id, last_login, cache_token, country)
+                        VALUES ("${user.uri}", ${id}, NOW(), "${cache}", "${user.country}");`
+
+    console.log(newLogin);
+    db.query(newLogin, (err,result) => {
+        console.log(err);
+        res.send("Added to logins");
+    })
+})
+
 
 app.listen(8080, () => {
     console.log("Listening on Port 8080...");

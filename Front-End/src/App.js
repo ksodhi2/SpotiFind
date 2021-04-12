@@ -5,6 +5,9 @@ import Login from "./Login.js";
 import {getTokenFromUrl} from "./Spotify";
 
 
+var Spotify = require('spotify-web-api-js');
+const spotifyApi = new Spotify();
+
 
 function App() {
 
@@ -16,25 +19,95 @@ function App() {
   const [text2, setText2] = useState("No query.")
   const [text3, setText3] = useState("No query.")
   const [text4, setText4] = useState("No query.")
-  const [token, setToken] = useState();
+  
 
 
   const [userId1, setUserId1] = useState("");
   const [userCountry1, setUserCountry1] = useState("");
   const [userId4, setUserId4] = useState("");
-
+  
+  const [access,setAccess] = useState({});
+  const [token, setToken] = useState();
+  const [userInfo, setUserInfo] = useState({});
+  
 
   useEffect(() => {
     const hash = getTokenFromUrl();
-    window.location.hash = "";
+    if(localStorage.spotifind_cache == null)
+      localStorage.spotifind_cache =  Math.random().toString().substr(2, 10);
+    
     const _token = hash.access_token;
+    console.log(_token);
+    setAccess(hash);
 
     if (_token) {
       setToken(_token);
+      
     }
 
-    console.log("token", token);
+    spotifyApi.setAccessToken(_token);
+    var _user;
+    spotifyApi.getMe({}, (err,res) => {
+      if(err != null) {
+        console.log(err);
+      } else {
+        _user = res;
+        setUserInfo(res);
+        updateLogin(_user);
+      }
+    });
+    
   }, []);
+
+  const updateLogin = (user) => {
+    console.log(user);
+    var _user;
+    Axios.get("http://localhost:8080/api/getLogin", {
+      params: {
+        user: user
+      }
+    }).then((res) => {
+      _user = res.data;
+    })
+
+    if(_user != null) {
+      Axios.get("http://localhost:8080/api/updateLogin", {
+        params: {
+          user: user,
+          cache: localStorage.spotifind_cache
+        }
+      });
+    } else {
+      var id;
+      Axios.get("http://localhost:8080/api/getNewUserId")
+      .catch((err) => console.log(err))
+      .then(
+        (res) => {
+          id = res.data.max_id;
+          console.log(id);
+          Axios.get("http://localhost:8080/api/addNewUser", {
+            params: {
+              user: user,
+              cache: localStorage.spotifind_cache,
+              id: id
+            }
+          }).then((res) => {
+            Axios.get("http://localhost:8080/api/addNewLogin", {
+            params: {
+              user: user,
+              cache: localStorage.spotifind_cache,
+              id: id
+            }
+          })
+          })
+        }
+      )
+      //console.log(id);
+      
+    }
+  }
+
+
 
   const exampleQuery1 = () => {
     
