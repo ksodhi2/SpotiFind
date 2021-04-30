@@ -6,18 +6,14 @@ const mysql = require("mysql");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 
-<<<<<<< HEAD
-=======
 var db = mysql.createConnection({
     host: '34.121.38.95',
     user: 'jack',
     password: 'cs411team80',
     database: 'spotifind'
 })
->>>>>>> master
 
 
-<<<<<<< HEAD
 let config = {
     user: process.env.DB_USER,
     database: process.env.DB_DATABASE,
@@ -54,27 +50,6 @@ app.get("/api/getArtistInfo", function(req, res){
     db.query(sqlReq, (err,result) => {
         // Send the SQL result in the API response
         //console.log(result);
-=======
-
-app.get("/api/insertUser", function(req, res){
-    const userId = parseInt(req.query.userId);
-    const userCountry = req.query.userCountry;
-    // console.log(req.query);
-    const sqlInsert = `INSERT INTO Users (user_id, country, explicit) values (${userId}, "${userCountry}", 0);`;
-    db.query(sqlInsert, (err, result) => {
-        res.send(result);
-    })
-})
-
-app.get("/api/updateUser", function(req, res){
-    const userId = parseInt(req.query.userId);
-    const userCountry = req.query.userCountry;
-    // console.log(userId);
-    // console.log(userCountry);
-
-    const sqlUpdate = `update Users set country = "${userCountry}" where user_id = ${userId};`;
-    db.query(sqlUpdate, (err, result) => {
->>>>>>> master
         res.send(result);
     })
 })
@@ -90,14 +65,9 @@ app.get("/api/deleteUser", function(req, res){
 
 app.get("/api/findUser", function(req, res){
     const userId = parseInt(req.query.userId);
-<<<<<<< HEAD
     const userCountry = req.query.userCountry;
     //console.log(req.query);
     const sqlInsert = `INSERT INTO Users (user_id, country, explicit) values (${userId}, "${userCountry}", 0);`;
-=======
-    //console.log(req.query);
-    const sqlInsert = `SELECT * FROM Users WHERE user_id = ${userId};`;
->>>>>>> master
     db.query(sqlInsert, (err, result) => {
         res.send(result);
     })
