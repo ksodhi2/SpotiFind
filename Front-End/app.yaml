@@ -1,0 +1,10 @@
+env: flex
+runtime: nodejs
+
+beta_settings:
+  cloud_sql_instances: ultra-aquifer-274120:us-central1:spotifind8
+
+handlers:
+  - url: /.*
+    secure: always
+    script: auto
